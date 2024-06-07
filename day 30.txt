@@ -82,3 +82,106 @@ public class SimpleHttpClient {
         }
     }
 }
+
+task 5:
+
+import java.io.*;
+import java.net.*;
+
+public class TCPClientServerExample {
+
+    static class Operation implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private int number1;
+        private int number2;
+        private String operation;
+
+        public Operation(int number1, int number2, String operation) {
+            this.number1 = number1;
+            this.number2 = number2;
+            this.operation = operation;
+        }
+
+        public int getNumber1() {
+            return number1;
+        }
+
+        public int getNumber2() {
+            return number2;
+        }
+
+        public String getOperation() {
+            return operation;
+        }
+
+        @Override
+        public String toString() {
+            return number1 + " " + operation + " " + number2;
+        }
+    }
+
+    public static void main(String[] args) {
+        int port = 12345;
+
+        // Start server
+        new Thread(() -> {
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
+                System.out.println("Server is listening on port " + port);
+
+                while (true) {
+                    try (Socket socket = serverSocket.accept()) {
+                        ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+                        Operation operation = (Operation) input.readObject();
+                        System.out.println("Received operation: " + operation);
+
+                        int result = compute(operation);
+                        ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                        output.writeObject(result);
+                        System.out.println("Sent result: " + result);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+        // Wait for server to start
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Start client
+        try (Socket socket = new Socket("localhost", port)) {
+            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+
+            Operation operation = new Operation(2, 2, "+");
+            output.writeObject(operation);
+            System.out.println("Sent operation: " + operation);
+
+            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+            int result = (int) input.readObject();
+            System.out.println("Received result: " + result);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static int compute(Operation operation) {
+        switch (operation.getOperation()) {
+            case "+":
+                return operation.getNumber1() + operation.getNumber2();
+            case "-":
+                return operation.getNumber1() - operation.getNumber2();
+            case "*":
+                return operation.getNumber1() * operation.getNumber2();
+            case "/":
+                return operation.getNumber1() / operation.getNumber2();
+            default:
+                throw new IllegalArgumentException("Invalid operation: " + operation.getOperation());
+        }
+    }
+}
