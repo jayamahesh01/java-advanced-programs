@@ -29,3 +29,56 @@ public class NIOFileCopy {
         }
     }
 }
+
+task 4:
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+public class SimpleHttpClient {
+    public static void main(String[] args) {
+        String urlString = "http://www.example.com";
+
+        try {
+            // Create a URL object
+            URL url = new URL(urlString);
+            
+            // Open a connection to the URL
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            
+            // Set the request method (GET, POST, etc.)
+            connection.setRequestMethod("GET");
+            
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
+
+            // Get and print response headers
+            Map<String, List<String>> headers = connection.getHeaderFields();
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+
+            // Read and print the response body
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // Print the response body
+            System.out.println("Response Body:");
+            System.out.println(response.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
