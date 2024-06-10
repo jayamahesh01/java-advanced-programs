@@ -185,3 +185,108 @@ public class TCPClientServerExample {
         }
     }
 }
+---------------------------------------------------------------------------------------------------------------------------------------------------
+task 1:
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DatabaseConnectionManager {
+    private static DatabaseConnectionManager instance;
+    private Connection connection;
+    private String url = "jdbc:mysql://localhost:3306/mydatabase";
+    private String username = "root";
+    private String password = "password";
+
+    private DatabaseConnectionManager() throws SQLException {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            this.connection = DriverManager.getConnection(url, username, password);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new SQLException(e);
+        }
+    }
+
+    public static DatabaseConnectionManager getInstance() throws SQLException {
+        if (instance == null) {
+            synchronized (DatabaseConnectionManager.class) {
+                if (instance == null) {
+                    instance = new DatabaseConnectionManager();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+}
+
+----------------------------------------------------------------------------------------------
+task 2:
+public interface Shape {
+    void draw();
+}
+
+// Circle.java
+public class Circle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Circle");
+    }
+}
+
+// Square.java
+public class Square implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Square");
+    }
+}
+
+// Rectangle.java
+public class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Rectangle");
+    }
+}
+
+// ShapeFactory.java
+public class ShapeFactory {
+    public Shape getShape(String shapeType) {
+        if (shapeType == null) {
+            return null;
+        }
+        if (shapeType.equalsIgnoreCase("CIRCLE")) {
+            return new Circle();
+        } else if (shapeType.equalsIgnoreCase("SQUARE")) {
+            return new Square();
+        } else if (shapeType.equalsIgnoreCase("RECTANGLE")) {
+            return new Rectangle();
+        }
+        return null;
+    }
+}
+
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        ShapeFactory shapeFactory = new ShapeFactory();
+
+        // Get an object of Circle and call its draw method.
+        Shape shape1 = shapeFactory.getShape("CIRCLE");
+        shape1.draw();
+
+        // Get an object of Square and call its draw method.
+        Shape shape2 = shapeFactory.getShape("SQUARE");
+        shape2.draw();
+
+        // Get an object of Rectangle and call its draw method.
+        Shape shape3 = shapeFactory.getShape("RECTANGLE");
+        shape3.draw();
+    }
+}
+
+--------------------------------------------------------------------------------------------
