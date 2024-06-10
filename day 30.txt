@@ -435,4 +435,115 @@ public class FactoryPattern {
 		Person female = PersonFactory.getPerson("Mary","F");
 		System.out.println(female.getNameAndSalutation());//Miss/Mrs
 	}}
- 
+ --------------------------------------------------------------------------------------------------------------
+public class SensitiveObjectProxy {
+    private String secretKey = "SuperSecretKey123";
+    private String password;
+
+    public SensitiveObjectProxy(String password) {
+        this.password = password;
+    }
+
+    public String getSecretKey(String providedPassword) {
+        if (this.password.equals(providedPassword)) {
+            return secretKey;
+        } else {
+            return "Access Denied: Incorrect Password!";
+        }
+    }
+
+    public static void main(String[] args) {
+        SensitiveObjectProxy proxy = new SensitiveObjectProxy("correct_password");
+        System.out.println(proxy.getSecretKey("correct_password")); // Should print the secret key
+        System.out.println(proxy.getSecretKey("wrong_password")); // Should print "Access Denied: Incorrect Password!"
+    }
+}
+
+-------------------------------------------------------------------------------
+
+task 4:
+import java.util.Arrays;
+
+public class Context {
+    private SortingStrategy strategy;
+
+    public void setStrategy(SortingStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public void sortNumbers(int[] numbers) {
+        strategy.sort(numbers);
+    }
+
+    public static void main(String[] args) {
+        Context context = new Context();
+
+        int[] numbers = {64, 34, 25, 12, 22, 11, 90};
+
+        // Using BubbleSort
+        context.setStrategy(new BubbleSortStrategy());
+        context.sortNumbers(numbers);
+        System.out.println("BubbleSort: " + Arrays.toString(numbers));
+
+        // Using QuickSort
+        numbers = new int[]{64, 34, 25, 12, 22, 11, 90}; // resetting array
+        context.setStrategy(new QuickSortStrategy());
+        context.sortNumbers(numbers);
+        System.out.println("QuickSort: " + Arrays.toString(numbers));
+    }
+
+    interface SortingStrategy {
+        void sort(int[] numbers);
+    }
+
+    static class BubbleSortStrategy implements SortingStrategy {
+        @Override
+        public void sort(int[] numbers) {
+            int n = numbers.length;
+            for (int i = 0; i < n-1; i++) {
+                for (int j = 0; j < n-i-1; j++) {
+                    if (numbers[j] > numbers[j+1]) {
+                        // swap temp and numbers[i]
+                        int temp = numbers[j];
+                        numbers[j] = numbers[j+1];
+                        numbers[j+1] = temp;
+                    }
+                }
+            }
+        }
+    }
+
+    static class QuickSortStrategy implements SortingStrategy {
+        @Override
+        public void sort(int[] numbers) {
+            quickSort(numbers, 0, numbers.length - 1);
+        }
+
+        private void quickSort(int[] numbers, int low, int high) {
+            if (low < high) {
+                int pi = partition(numbers, low, high);
+                quickSort(numbers, low, pi - 1);
+                quickSort(numbers, pi + 1, high);
+            }
+        }
+
+        private int partition(int[] numbers, int low, int high) {
+            int pivot = numbers[high];
+            int i = (low - 1);
+            for (int j = low; j < high; j++) {
+                if (numbers[j] < pivot) {
+                    i++;
+                    int temp = numbers[i];
+                    numbers[i] = numbers[j];
+                    numbers[j] = temp;
+                }
+            }
+
+            int temp = numbers[i + 1];
+            numbers[i + 1] = numbers[high];
+            numbers[high] = temp;
+
+            return i + 1;
+        }
+    }
+}
