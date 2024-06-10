@@ -547,3 +547,131 @@ public class Context {
         }
     }
 }
+-----------------------------------------------------------------------------------------
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+public class MathOperationsTest {
+
+    @Test
+    public void testAddition() {
+        assertEquals(4, MathOperations.add(2, 2));
+    }
+
+    @Test
+    public void testSubtraction() {
+        assertEquals(1, MathOperations.subtract(3, 2));
+    }
+
+    @Test
+    public void testMultiplication() {
+        assertEquals(6, MathOperations.multiply(2, 3));
+    }
+
+    @Test
+    public void testDivision() {
+        assertEquals(2, MathOperations.divide(6, 3));
+    }
+}
+Task 2: Extending Tests with Setup and Teardown
+java
+Copy code
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+public class MathOperationsTest {
+
+    @BeforeClass
+    public static void setUpClass() {
+        // This method is executed once before any test methods are run
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        // This method is executed once after all test methods are run
+    }
+
+    @Before
+    public void setUp() {
+        // This method is executed before each test method is run
+    }
+
+    @After
+    public void tearDown() {
+        // This method is executed after each test method is run
+    }
+
+    @Test
+    public void testAddition() {
+        assertEquals(4, MathOperations.add(2, 2));
+    }
+
+    @Test
+    public void testSubtraction() {
+        assertEquals(1, MathOperations.subtract(3, 2));
+    }
+
+    @Test
+    public void testMultiplication() {
+        assertEquals(6, MathOperations.multiply(2, 3));
+    }
+
+    @Test
+    public void testDivision() {
+        assertEquals(2, MathOperations.divide(6, 3));
+    }
+}
+Task 3: Testing Custom String Utility Class
+java
+Copy code
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+
+public class StringUtilsTest {
+
+    @Test
+    public void testReverseString() {
+        assertEquals("cba", StringUtils.reverse("abc"));
+    }
+
+    @Test
+    public void testIsPalindrome() {
+        assertTrue(StringUtils.isPalindrome("madam"));
+        assertFalse(StringUtils.isPalindrome("hello"));
+    }
+}
+
+--------------------------------------------------------------------------------------------------------
+task 4:
+
+Serial Garbage Collector:
+
+Single-threaded, simplest implementation.
+Suitable for small applications with low memory requirements.
+Can cause longer pauses due to stop-the-world events.
+Parallel Garbage Collector:
+
+Uses multiple threads for garbage collection.
+Suitable for medium to large applications.
+Can cause short pauses but longer than the CMS and G1 collectors.
+Concurrent Mark Sweep (CMS) Collector:
+
+Designed for applications that prioritize low pause times.
+Uses multiple threads for garbage collection, but some operations still require stop-the-world pauses.
+Not suitable for applications with very large heaps.
+G1 Garbage Collector:
+
+Designed for large heaps (>4GB) with a focus on low latency.
+Divides the heap into regions and uses multiple threads to scan them concurrently.
+Can be used for both server and client applications.
+Z Garbage Collector (ZGC):
+
+Designed for applications requiring very low latency.
+Uses colored pointers and load barriers to achieve concurrent garbage collection.
+Suitable for large heaps (>4GB) and provides consistent pause times even with very large heaps.
